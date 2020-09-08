@@ -8,15 +8,12 @@
   (framed-markup (markup? . -> . markup?))
   (empty-markup markup?)
   (empty-line markup?)
-  (framed (markup? . -> . markup?))
   (horizontal (markup? ... . -> . markup?))
   (vertical (markup? ... . -> . markup?))))
 (require (rename-in simple-tree-text-markup/data (empty-markup make-empty-markup))
          (only-in racket/list splitf-at append-map))
 
 (define empty-markup (make-empty-markup))
-
-(define (framed markup) (framed-markup markup))
 
 (define empty-line (horizontal-markup '()))
 
@@ -83,9 +80,9 @@
                             "bam" "wup")
                 "foobarbazblabamwup")
   (check-equal? (horizontal "foo" "bar"
-                            (framed "baz")
+                            (framed-markup "baz")
                             "bam" "wup")
-                (horizontal "foobar" (framed "baz") "bamwup"))
+                (horizontal "foobar" (framed-markup "baz") "bamwup"))
 
   (check-equal? (vertical)
                 empty-markup)
