@@ -1,10 +1,11 @@
 ; Smart constructors and better names for markup
 #lang racket/base
-(require racket/contract)
+(require racket/contract
+         (only-in simple-tree-text-markup/data markup?))
 (provide
- (except-out (all-from-out simple-tree-text-markup/data)
-             horizontal-markup vertical-markup)  ; non-smart constructors
  (contract-out
+  (srcloc-markup (srcloc? markup? . -> . markup?))
+  (framed-markup (markup? . -> . markup?))
   (empty-markup markup?)
   (empty-line markup?)
   (framed (markup? . -> . markup?))
