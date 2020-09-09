@@ -17,8 +17,15 @@ This package comes with separate modules for @emph{inspecting} and
 @racketmodname[simple-tree-text-markup/data] and
 @racketmodname[simple-tree-text-markup/construct], respectively.
 
+There's also a module @racketmodname[simple-tree-text-markup/data]
+that renders markup to text.  Rendering markup to GUI is quite
+context-specific.  Hence, the code for rendering to GUIs is
+implemented with specific applications, such as DrRacket or the test
+engine.
+
 @include-section["data.scrbl"]
 @include-section["construct.scrbl"]
+@include-section["text.scrbl"]
 
 
 
