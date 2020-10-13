@@ -6,8 +6,7 @@
                      "at-exp-lib"
                      "scribble-lib"
                      "racket-doc"
-                     "simple-tree-text-markup-lib"
-                     "gui-doc"))
+                     "simple-tree-text-markup-lib"))
 (define deps '("base"))
 
 (define pkg-desc "documentation part of \"simple-tree-text-markup\"")
