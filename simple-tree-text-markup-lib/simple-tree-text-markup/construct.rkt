@@ -6,6 +6,7 @@
  (contract-out
   (srcloc-markup (srcloc? markup? . -> . markup?))
   (framed-markup (markup? . -> . markup?))
+  (image-markup (any/c markup? (or/c natural-number/c #f) (or/c natural-number/c #f) . -> . markup?))
   (empty-markup markup?)
   (empty-line markup?)
   (horizontal (markup? ... . -> . markup?))
@@ -50,7 +51,7 @@
       ((null? markups) empty-markup)
       ((null? (cdr markups))
        (car markups))
-      (else (horizontal-markup markups)))))
+      (else (horizontal-markup (remove "" markups))))))
 
 (define (flatten-vertical markups)
   (append-map (lambda (markup)
