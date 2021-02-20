@@ -1,6 +1,7 @@
 #lang scribble/doc
 
-@(require (for-label simple-tree-text-markup/data)
+@(require (for-label simple-tree-text-markup/data
+                     racket/snip racket/draw)
           scribble/manual)
 
 @title[#:style 'toc #:tag "simple-tree-text-markup-data"]{Markup Representation}
@@ -20,7 +21,8 @@ A markup object can be one of the following:
 @item{a @racket[horizontal-markup]}
 @item{a @racket[vertical-markup]}
 @item{a @racket[srcloc-markup]}
-@item{a @racket[framed-markup]}]
+@item{a @racket[framed-markup]}
+@item{an @racket[image-markup]}]
 
 @defproc[(markup? [object any]) boolean?]{
 Returns @racket[#t] if @racket[object] is a markup object, @racket[#f] otherwise.
@@ -52,4 +54,19 @@ by @racket[srcloc], where the link visualization is represented by
 @defstruct*[framed-markup
 	    ((markup markup?))]{
 This markup object puts a frame around @racket[markup].
+}
+
+@defstruct*[image-markup
+	   ((data any)
+	    (alt-markup markup?)
+	    (width (or/c #f natural-number/c))
+            (height (or/c #f natural-number/c)))]{
+This markup object represents an image.  The @racket[data] contains the image data.
+The format is not exactly specified, but a graphical renderer should accept
+@racket[bitmap%] and @racket[snip%] objects and the datum from a @racket[record-dc%].
+
+The @racket[width] and @racket[height] are for image data that doesn't specify width
+and height - notably the datum from a @racket[record-dc%].
+
+If rendering of @racket[data] is not possible, @racket[alt-markup] can be substituted.
 }
