@@ -1,7 +1,8 @@
 #lang scribble/doc
 
 @(require (for-label simple-tree-text-markup/data
-                     racket/snip racket/draw)
+                     racket/snip racket/draw
+		     racket) ; srcloc
           scribble/manual)
 
 @title[#:style 'toc #:tag "simple-tree-text-markup-data"]{Markup Representation}
@@ -24,7 +25,7 @@ A markup object can be one of the following:
 @item{a @racket[framed-markup]}
 @item{an @racket[image-markup]}]
 
-@defproc[(markup? [object any]) boolean?]{
+@defproc[(markup? [object any/c]) boolean?]{
 Returns @racket[#t] if @racket[object] is a markup object, @racket[#f] otherwise.
 }
 
@@ -57,7 +58,7 @@ This markup object puts a frame around @racket[markup].
 }
 
 @defstruct*[image-markup
-	   ((data any)
+	   ((data any/c)
 	    (alt-markup markup?)
 	    (width (or/c #f natural-number/c))
             (height (or/c #f natural-number/c)))]{

@@ -1,6 +1,8 @@
 #lang scribble/doc
 
-@(require (for-label simple-tree-text-markup/construct)
+@(require (for-label (only-in simple-tree-text-markup/data markup?)
+	  	     simple-tree-text-markup/construct
+		     racket) ; srcloc
           scribble/manual)
 
 @title[#:style 'toc #:tag "simple-tree-text-markup-construct"]{Markup Construction}

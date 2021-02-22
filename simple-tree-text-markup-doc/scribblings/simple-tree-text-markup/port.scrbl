@@ -1,6 +1,8 @@
 #lang scribble/doc
 
-@(require (for-label simple-tree-text-markup/port)
+@(require (for-label simple-tree-text-markup/data
+		     simple-tree-text-markup/port
+                     racket) ; output-port?
           scribble/manual)
 
 @title[#:style 'toc #:tag "simple-tree-text-markup-port"]{Generating Markup From a Port}
