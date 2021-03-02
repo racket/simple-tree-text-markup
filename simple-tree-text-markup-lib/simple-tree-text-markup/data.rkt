@@ -49,7 +49,8 @@
   #:transparent)
 
 (struct srcloc-markup
-  (srcloc markup))
+  (srcloc markup)
+  #:transparent)
 
 (struct framed-markup
   (markup)
