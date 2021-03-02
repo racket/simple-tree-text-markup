@@ -10,7 +10,9 @@
   (empty-markup markup?)
   (empty-line markup?)
   (horizontal (markup? ... . -> . markup?))
-  (vertical (markup? ... . -> . markup?))))
+  (vertical (markup? ... . -> . markup?))
+  (markup-transform-image-data ((any/c (or/c natural-number/c #f) (or/c natural-number/c #f) . -> . any/c) markup? . -> . markup?))))
+   
 (require (rename-in simple-tree-text-markup/data (empty-markup make-empty-markup))
          (only-in racket/list splitf-at append-map))
 
@@ -72,3 +74,27 @@
       (else
        (vertical-markup markups)))))
 
+
+(define (markup-transform-image-data transform-image-data markup)
+  (let recur ((markup  markup))
+    (cond
+      ((string? markup) markup)
+      ((empty-markup? markup) markup)
+      ((horizontal-markup? markup)
+       (horizontal-markup
+        (map recur (horizontal-markup-markups markup))))
+      ((vertical-markup? markup)
+       (vertical-markup
+        (map recur (vertical-markup-markups markup))))
+      ((srcloc-markup? markup)
+       (srcloc-markup (srcloc-markup-srcloc markup)
+                      (recur (srcloc-markup-markup markup))))
+      ((framed-markup? markup)
+       (framed-markup (recur (framed-markup-markup markup))))
+      ((image-markup? markup)
+       (image-markup (transform-image-data (image-markup-data markup)
+                                           (image-markup-width markup)
+                                           (image-markup-height markup))
+                     (recur (image-markup-alt-markup markup))
+                     (image-markup-width markup)
+                     (image-markup-height markup))))))

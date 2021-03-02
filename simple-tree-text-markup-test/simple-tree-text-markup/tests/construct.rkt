@@ -29,3 +29,30 @@
               (vertical-markup '("foo" "bar")))
 (check-equal? (vertical "foo" (vertical "bla" "baz") "bar")
               (vertical "foo" "bla" "baz" "bar"))
+
+(check-equal? (markup-transform-image-data (lambda (data width height)
+                                             (format "~a transformed ~a ~a" data width height))
+                                           (horizontal
+                                            "foo"
+                                            (image-markup "horizontal" "image" 1 2)
+                                            empty-markup
+                                            (vertical
+                                             "bar"
+                                             (image-markup "vertical" "image" 3 4)
+                                             (srcloc-markup (srcloc 'source 1 2 3 4)
+                                                            (image-markup "srcloc" "image" 5 6))
+                                             (framed-markup
+                                              (image-markup "framed" "image" 7 8)))))
+              (horizontal
+               "foo"
+               (image-markup "horizontal transformed 1 2" "image" 1 2)
+               empty-markup
+               (vertical
+                "bar"
+                (image-markup "vertical transformed 3 4" "image" 3 4)
+                (srcloc-markup (srcloc 'source 1 2 3 4)
+                               (image-markup "srcloc transformed 5 6" "image" 5 6))
+                (framed-markup
+                 (image-markup "framed transformed 7 8" "image" 7 8)))))
+
+             
