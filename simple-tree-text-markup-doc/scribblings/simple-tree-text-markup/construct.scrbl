@@ -42,12 +42,11 @@ This procedure arranges the @racket[markup] arguments horizontally.
 This procedure arranges the @racket[markup] arguments vertically.
 }
 
-@defproc[(markup-transform-image-data [transform-image-data (any/c (or/c natural-number/c #f) (or/c natural-number/c #f) . -> . any/c)]
+@defproc[(markup-transform-image-data [transform-image-data (any/c . -> . any/c)]
 				      [markup markup?])
 	 markup?]{
 This walks over a markup tree, leaving everything unchanged except
 @racket[image-markup] values.  For those, it applies
-@racket[transform-image-data] to its @racket[data], @racket[width],
-and @racket[height] fields, and replaces the @racket[data] field by
-the return value.
+@racket[transform-image-data] to its @racket[data]field, replacing
+it by the return value.
 }

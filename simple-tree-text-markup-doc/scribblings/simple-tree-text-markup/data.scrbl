@@ -59,15 +59,19 @@ This markup object puts a frame around @racket[markup].
 
 @defstruct*[image-markup
 	   ((data any/c)
-	    (alt-markup markup?)
-	    (width (or/c #f natural-number/c))
-            (height (or/c #f natural-number/c)))]{
+	    (alt-markup markup?))]{
 This markup object represents an image.  The @racket[data] contains the image data.
 The format is not exactly specified, but a graphical renderer should accept
-@racket[bitmap%] and @racket[snip%] objects and the datum from a @racket[record-dc%].
-
-The @racket[width] and @racket[height] are for image data that doesn't specify width
-and height - notably the datum from a @racket[record-dc%].
+@racket[bitmap%], @racket[snip%], and @racket[record-dc-datum] objects.
 
 If rendering of @racket[data] is not possible, @racket[alt-markup] can be substituted.
 }
+
+@defstruct[record-dc-datum
+	   ((datum any/c)
+            (width natural-number/c)
+            (height natural-number/c))]{
+This represents an image, containing the result the
+@racket[get-recorded-datum] from @racket[record-dc%],
+as well as the width and height of that image.}
+

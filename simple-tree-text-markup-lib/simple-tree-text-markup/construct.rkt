@@ -1,17 +1,18 @@
 ; Smart constructors and better names for markup
 #lang racket/base
 (require racket/contract
-         (only-in simple-tree-text-markup/data markup?))
+         (only-in simple-tree-text-markup/data markup? record-dc-datum?))
 (provide
  (contract-out
   (srcloc-markup (srcloc? markup? . -> . markup?))
   (framed-markup (markup? . -> . markup?))
-  (image-markup (any/c markup? (or/c natural-number/c #f) (or/c natural-number/c #f) . -> . markup?))
+  (image-markup (any/c markup? . -> . markup?))
+  (record-dc-datum (any/c natural-number/c natural-number/c . -> . record-dc-datum?))
   (empty-markup markup?)
   (empty-line markup?)
   (horizontal (markup? ... . -> . markup?))
   (vertical (markup? ... . -> . markup?))
-  (markup-transform-image-data ((any/c (or/c natural-number/c #f) (or/c natural-number/c #f) . -> . any/c) markup? . -> . markup?))))
+  (markup-transform-image-data ((any/c . -> . any/c) markup? . -> . markup?))))
    
 (require (rename-in simple-tree-text-markup/data (empty-markup make-empty-markup))
          (only-in racket/list splitf-at append-map))
@@ -92,9 +93,5 @@
       ((framed-markup? markup)
        (framed-markup (recur (framed-markup-markup markup))))
       ((image-markup? markup)
-       (image-markup (transform-image-data (image-markup-data markup)
-                                           (image-markup-width markup)
-                                           (image-markup-height markup))
-                     (recur (image-markup-alt-markup markup))
-                     (image-markup-width markup)
-                     (image-markup-height markup))))))
+       (image-markup (transform-image-data (image-markup-data markup))
+                     (recur (image-markup-alt-markup markup)))))))

@@ -20,12 +20,14 @@
                  ;; typical choices:
                  ;; - image%
                  ;; - snip%
-                 ;; - record-dc datum
+                 ;; - record-dc-datum
                  ((data any/c)
-                  (alt-markup markup?)
-                  (width (or/c #f natural-number/c))
-                  (height (or/c #f natural-number/c))))
-               (markup? (any/c . -> . boolean?))))
+                  (alt-markup markup?)))
+               (markup? (any/c . -> . boolean?))
+               (struct record-dc-datum
+                 ((datum any/c)
+                  (width natural-number/c)
+                  (height natural-number/c)))))
 
 (define (markup? x)
   (or (string? x)
@@ -57,8 +59,13 @@
   #:transparent)
 
 (struct image-markup
-  (data alt-markup width height)
+  (data alt-markup)
   #:transparent)
+
+(struct record-dc-datum
+  (datum width height)
+  #:transparent)
+
   
 
 
