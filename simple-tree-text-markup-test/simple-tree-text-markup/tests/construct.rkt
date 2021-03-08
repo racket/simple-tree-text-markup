@@ -30,29 +30,29 @@
 (check-equal? (vertical "foo" (vertical "bla" "baz") "bar")
               (vertical "foo" "bla" "baz" "bar"))
 
-(check-equal? (markup-transform-image-data (lambda (data width height)
-                                             (format "~a transformed ~a ~a" data width height))
+(check-equal? (markup-transform-image-data (lambda (data)
+                                             (format "~a transformed" data))
                                            (horizontal
                                             "foo"
-                                            (image-markup "horizontal" "image" 1 2)
+                                            (image-markup "horizontal" "image")
                                             empty-markup
                                             (vertical
                                              "bar"
-                                             (image-markup "vertical" "image" 3 4)
+                                             (image-markup "vertical" "image")
                                              (srcloc-markup (srcloc 'source 1 2 3 4)
-                                                            (image-markup "srcloc" "image" 5 6))
+                                                            (image-markup "srcloc" "image"))
                                              (framed-markup
-                                              (image-markup "framed" "image" 7 8)))))
+                                              (image-markup "framed" "image")))))
               (horizontal
                "foo"
-               (image-markup "horizontal transformed 1 2" "image" 1 2)
+               (image-markup "horizontal transformed" "image")
                empty-markup
                (vertical
                 "bar"
-                (image-markup "vertical transformed 3 4" "image" 3 4)
+                (image-markup "vertical transformed" "image")
                 (srcloc-markup (srcloc 'source 1 2 3 4)
-                               (image-markup "srcloc transformed 5 6" "image" 5 6))
+                               (image-markup "srcloc transformed" "image"))
                 (framed-markup
-                 (image-markup "framed transformed 7 8" "image" 7 8)))))
+                 (image-markup "framed transformed" "image")))))
 
              
