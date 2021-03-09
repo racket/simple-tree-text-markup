@@ -31,7 +31,7 @@
                 "      └─────┘│ wup │"
                 "             └─────┘"))
 
-(check-equal? (markup->block (horizontal "foo" (image-markup 'data "<image>" 100 100)))
+(check-equal? (markup->block (horizontal "foo" (image-markup 'data "<image>")))
               '("foo<image>"))
 
 (let ((srcloc (srcloc "source" 12 25 100 200)))
