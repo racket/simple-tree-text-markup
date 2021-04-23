@@ -23,7 +23,8 @@ A markup object can be one of the following:
 @item{a @racket[vertical-markup]}
 @item{a @racket[srcloc-markup]}
 @item{a @racket[framed-markup]}
-@item{an @racket[image-markup]}]
+@item{an @racket[image-markup]}
+@item{a @racket[number-markup]}]
 
 @defproc[(markup? [object any/c]) boolean?]{
 Returns @racket[#t] if @racket[object] is a markup object, @racket[#f] otherwise.
@@ -75,3 +76,15 @@ This represents an image, containing the result the
 @racket[get-recorded-datum] from @racket[record-dc%],
 as well as the width and height of that image.}
 
+@defstruct*[number-markup
+            ((number number?)		
+             (prefix? boolean?)
+             (fraction-view (or/c 'mixed 'improper 'decimal)))]{
+This represents a number to be rendered.
+The @racket[prefix?] field says wether the rendered number should carry a @tt{#e}
+or a @tt{#i} prefix to show exactness.
+
+The @racket[fraction-view] field specifies how exact non-integer reals
+should be rendered: As a mixed fraction, an improper fraction, or a
+decimal, possibly identifying periodic digits.
+}
