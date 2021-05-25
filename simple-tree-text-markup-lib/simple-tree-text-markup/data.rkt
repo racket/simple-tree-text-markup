@@ -30,7 +30,8 @@
                   (height natural-number/c)))
                (struct number-markup
                  ((number number?)
-                  (prefix? boolean?)
+                  (exact-prefix (or/c 'always 'never 'when-necessary))
+                  (inexact-prefix (or/c 'always 'never 'when-necessary))
                   ;; for exact non-integers only
                   (fraction-view (or/c 'mixed 'improper 'decimal))))))
 
@@ -72,5 +73,5 @@
   (datum width height)
   #:transparent)
 
-(struct number-markup (number prefix? fraction-view)
+(struct number-markup (number exact-prefix inexact-prefix fraction-view)
   #:transparent)

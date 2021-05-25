@@ -82,207 +82,78 @@
      (markup->block (image-markup-alt-markup markup)))
     ((number-markup? markup)
      (list (number-markup->string (number-markup-number markup)
-                                  (number-markup-prefix? markup)
-                                  (number-markup-fraction-view markup))))))
+                                  #:exact-prefix (number-markup-exact-prefix markup)
+                                  #:inexact-prefix (number-markup-inexact-prefix markup)
+                                  #:fraction-view (number-markup-fraction-view markup))))))
 
-(define (number-markup->string number prefix? fraction-view)
+(define (number-markup->string number
+                               #:exact-prefix [exact-prefix 'never]
+                               #:inexact-prefix [inexact-prefix 'never]
+                               #:fraction-view [fraction-view #f])
   (cond
     [(inexact? number)
-     (string-append (if prefix? "#i" "") (number->string number))]
-    [(integer? number)
-     (string-append (if prefix? "#e" "") (number->string number))]
+     (string-append
+      (if (eq? inexact-prefix 'always) "#i" "")
+      (number->decimal-string number ""))]
+    [(eq? fraction-view 'decimal)
+     (string-append
+      (if (eq? exact-prefix 'always) "#e" "")
+      (number->decimal-string number (if (eq? exact-prefix 'when-necessary) "#e" "")))]
     [else
-     (number-markup->string/exact number prefix? fraction-view)]))
+     (string-append
+      (if (eq? exact-prefix 'always) "#e" "")
+      (number->string number))]))
 
-; stolen from number-snip code
-(define (number-markup->string/exact number prefix? fraction-view)
-
-  (define decimal-prefix (if prefix? "#e" ""))
-  
-  ;; clickable-portion : (union #f string)
-  (define clickable-portion #f)
-  ;; unbarred-portion : string
-  (define unbarred-portion "")
-  ;; barred-portion : (union #f string)
-  (define barred-portion #f)
-
-  ;; wholes/frac : string
-  ;; the whole-number portion of the number as a fraction
-  (define wholes/frac
-    (cond
-      [(= (floor number) 0) ""]
-      [(= (ceiling number) 0) "-"]
-      [(< number 0)
-       (number->string (ceiling number))]
-      [else
-       (number->string (floor number))]))
-      
-  ;; wholes/dec : string
-  ;; the whole-number portion of decimal expansion
-  (define wholes/dec
-    (cond
-      [(= (floor number) 0) "0"]
-      [(= (ceiling number) 0) "-0"]
-      [(< number 0)
-       (number->string (ceiling number))]
-      [else
-       (number->string (floor number))]))
-      
-  ;; nums : string
-  ;; the numerator of the mixed fraction, as a string
-  (define nums (number->string (numerator (- (abs number) (floor (abs number))))))
-  
-  ;; improper-nums : string
-  ;; the numerator of the improper fraction, as a string
-  (define improper-nums (number->string (numerator (abs number))))
-  
-  ;; mixed-prefix : string
-  ;; a prefix on the front of the mixed number (indicates if negative)
-  (define improper-prefix (if (number . < . 0) "-" ""))
-
-  ;; dens : string
-  ;; the denominator, as a string
-  (define dens (number->string (denominator (- (abs number) (floor (abs number))))))
-
-  ;; for the decimal expansion calculation code
-  (define init-num (* 10 (numerator (- (abs number) (floor (abs number))))))
-  (define den (denominator (- (abs number) (floor (abs number)))))
-    
-
-  ;; ht : number -o> (cons digit number)
-  ;; this maps from divisors of the denominator to
-  ;; digit and new divisor pairs. Use this
-  ;; to read off the decimal expansion.
-  (define ht (make-hash))
-
-  ;; this field holds the state of the current computation
-  ;; of the numbers digits. If it is a number, it corresponds
-  ;; to the next starting divisor in the iteration.
-  ;; if it is #f, it means that the string of digits is
-  ;; fully computed.
-  (define state init-num)
-
-  ;; repeat : (union 'unk number #f)
-  ;; this field correlates with `state'. If `state' is a number,
-  ;; this field is 'unk. Otherwise, this is either a number of #f.
-  ;; #f indicates no repeat.
-  ;; a number indiates a repeat starting at `number' in `ht'.
-  (define repeat 'unk)
-
-  ;; cut-off : number
-  ;; indicates how many digits to fetch for each click
-  (define cut-off 25)
-
-  ;; one-step-division : number -> number number
-  ;; given a numerator and denominator,
-  ;; returns a digits and a new numerator to consider
-  (define (one-step-division num)
-    (cond
-      [(num . < . den) (values 0 (* 10 num))]
-      [else
-       (let ([qu (quotient num den)])
-         (values qu (* 10 (- num (* qu den)))))]))
-      
-  ;; expand-number : -> void
-  ;; iterates until the numbers decimal expansion is completely computed,
-  ;; or the number's decimal expansion terminates.
-  (define (expand-number)
-    (let loop ([num state]
-               [counter cut-off])
-      (cond
-        [(hash-has-key? ht num)
-         (set! state #f)
-         (set! repeat num)]
-        [(zero? counter) 
-         (set! state num)]
-        [else
-         (let-values ([(dig next-num) (one-step-division num)])
-           (if (zero? next-num)
-               (begin
-                 (hash-set! ht num (cons dig #t))
-                 (set! state #f)
-                 (set! repeat #f))
-               (begin
-                 (hash-set! ht num (cons dig next-num))
-                 (loop next-num (- counter 1)))))])))
-
-  ;; extract-cycle : -> (listof digit)
-  ;; pre: (number? repeat)
-  (define (extract-cycle)
-    (let ([pr (hash-ref ht repeat)])
-      (cons (car pr)
-            (extract-helper (cdr pr)))))
-      
-  ;; extract-non-cycle : -> (listof digit)
-  (define (extract-non-cycle) (extract-helper init-num))
-      
-  (define (extract-helper start)
-    (let loop ([ind start])
-      (cond
-        [(equal? ind repeat) null]
-        [else
-         (let* ([iter (hash-ref ht ind)]
-                [dig (car iter)]
-                [next-num (cdr iter)])
-           (cons dig
-                 (if (hash-has-key? ht next-num)
-                     (loop next-num)
-                     null)))])))
-
-  (expand-number)
-  
+;; stolen from racket/pretty, but can't use because we're sitting inside a pretty-print-print-hook probably
+(define (number->decimal-string x exact-prefix)
   (cond
-    [(number? state) 
-     (set! unbarred-portion
-           (string-append
-            decimal-prefix
-            wholes/dec
-            "."
-            (apply string-append (map number->string (extract-non-cycle)))))
-     (set! barred-portion #f)
-     (set! clickable-portion "...")]
-    [(number? repeat)
-     (set! unbarred-portion
-           (string-append
-            decimal-prefix
-            wholes/dec
-            "."
-            (apply string-append 
-                   (map number->string (extract-non-cycle)))))
-     (set! barred-portion (apply string-append (map number->string (extract-cycle))))
-     (set! clickable-portion #f)]
+    [(or (inexact? x)
+         (integer? x))
+     (number->string x)]
+    [(not (real? x))
+     (let ([r (real-part x)]
+           [i (imag-part x)])
+       (format "~a~a~ai"
+               (number->decimal-string r "")
+               (if (negative? i)
+                   ""
+                   "+")
+               (number->decimal-string i "")))]
     [else
-     (set! unbarred-portion
-           (string-append
-            decimal-prefix
-            wholes/dec
-            "."
-            (apply string-append
-                   (map number->string (extract-non-cycle)))))
-     (set! barred-portion #f)
-     (set! clickable-portion #f)])
-
-  (case fraction-view
-    [(mixed)
-     (cond
-       [(string=? wholes/frac "")
-        (string-append nums "/" dens)]
-       [(string=? wholes/frac "-")
-        (string-append wholes/frac nums "/" dens)]
-       [else
-        (string-append wholes/frac " " nums "/" dens)])]
-    [(decimal)
-     (string-append 
-      unbarred-portion
-      (if barred-portion
-          (string-append barred-portion "_")
-          "")
-      (or clickable-portion ""))]
-    [(improper) (string-append 
-                 improper-prefix
-                 improper-nums
-                 "/"
-                 dens)]))
+     (let ([n (numerator x)]
+           [d (denominator x)])
+       ;; Count powers of 2 in denomintor
+       (let loop ([v d][2-power 0])
+         (if (and (positive? v)
+                  (even? v))
+             (loop (arithmetic-shift v -1) (add1 2-power))
+             ;; Count powers of 5 in denominator
+             (let loop ([v v][5-power 0])
+               (if (zero? (remainder v 5))
+                   (loop (quotient v 5) (add1 5-power))
+                   ;; No more 2s or 5s. Anything left?
+                   (if (= v 1)
+                       ;; Denominator = (* (expt 2 2-power) (expt 5 5-power)).
+                       ;; Print number as decimal.
+                       (let* ([10-power (max 2-power 5-power)]
+                              [scale (* (expt 2 (- 10-power 2-power))
+                                        (expt 5 (- 10-power 5-power)))]
+                              [s (number->string (* (abs n) scale))]
+                              [orig-len (string-length s)]
+                              [len (max (add1 10-power) orig-len)]
+                              [padded-s (if (< orig-len len)
+                                            (string-append
+                                             (make-string (- len orig-len) #\0)
+                                             s)
+                                            s)])
+                         (format "~a~a~a.~a"
+                                 exact-prefix
+                                 (if (negative? n) "-" "")
+                                 (substring padded-s 0 (- len 10-power))
+                                 (substring padded-s (- len 10-power) len)))
+                       ;; d has factor(s) other than 2 and 5.
+                       ;; Print as a fraction.
+                       (number->string x)))))))]))
 
 (define display-markup
   (case-lambda
