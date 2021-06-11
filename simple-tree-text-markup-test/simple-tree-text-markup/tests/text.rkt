@@ -34,7 +34,7 @@
 (check-equal? (markup->block (horizontal "foo" (image-markup 'data "<image>")))
               '("foo<image>"))
 
-(check-equal? (markup->block (number-markup 1/2 #:exact-prefix 'never #:inexact-prefix 'never #:fraction-view 'decimal))
+(check-equal? (markup->block (number 1/2 #:exact-prefix 'never #:inexact-prefix 'never #:fraction-view 'decimal))
               '("0.5"))
 
 (let ((srcloc (srcloc "source" 12 25 100 200)))

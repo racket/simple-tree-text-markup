@@ -8,6 +8,11 @@
   (framed-markup (markup? . -> . markup?))
   (image-markup (any/c markup? . -> . markup?))
   (record-dc-datum (any/c natural-number/c natural-number/c . -> . record-dc-datum?))
+  (number (->* (number?) (#:exact-prefix (or/c 'always 'never 'when-necessary)
+                          #:inexact-prefix (or/c 'always 'never 'when-necessary)
+                          #:fraction-view (or/c #f 'mixed 'improper 'decimal))
+               markup?))
+  ; temporary
   (number-markup (->* (number?) (#:exact-prefix (or/c 'always 'never 'when-necessary)
                                  #:inexact-prefix (or/c 'always 'never 'when-necessary)
                                  #:fraction-view (or/c #f 'mixed 'improper 'decimal))
@@ -27,10 +32,13 @@
 
 (define empty-line (horizontal-markup '()))
 
-(define (number-markup number
-                       #:exact-prefix [exact-prefix 'never] #:inexact-prefix [inexact-prefix 'never]
-                       #:fraction-view [fraction-view #f])
+(define (number number
+                #:exact-prefix [exact-prefix 'never] #:inexact-prefix [inexact-prefix 'never]
+                #:fraction-view [fraction-view #f])
   (make-number-markup number exact-prefix inexact-prefix fraction-view))
+
+; temporary
+(define number-markup number)
 
 ; flatten out nested markup elements, merge adjacent strings
 (define (normalize-horizontal markups)

@@ -34,12 +34,12 @@ This is a markup object representing an empty line, i.e. empty
 vertical space.
 }
 
-@defproc[(number-markup [number number?]
-			[#:exact-prefix exact-prefix (or/c 'always 'never 'when-necessary) 'never]
-			[#:inexact-prefix inexact-prefix (or/c 'always 'never 'when-necessary) 'never]
-			[#:fraction-view fraction-view (or/c #f 'mixed 'improper 'decimal) #f])
-	 markup?]{
-This construct markup for a number to be rendered in a format that can be read back.
+@defproc[(number [number number?]
+		 [#:exact-prefix exact-prefix (or/c 'always 'never 'when-necessary) 'never]
+		 [#:inexact-prefix inexact-prefix (or/c 'always 'never 'when-necessary) 'never]
+		 [#:fraction-view fraction-view (or/c #f 'mixed 'improper 'decimal) #f])
+  markup?]{
+This constructs markup for a number to be rendered in a format that can be read back.
 
 The @racket[exact-prefix] argument specifies whether the representation
 should carry a @litchar{#e} prefix: Always, never, or when necessary to
