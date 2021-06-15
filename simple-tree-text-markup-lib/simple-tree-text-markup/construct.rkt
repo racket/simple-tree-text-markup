@@ -12,11 +12,6 @@
                           #:inexact-prefix (or/c 'always 'never 'when-necessary)
                           #:fraction-view (or/c #f 'mixed 'improper 'decimal))
                markup?))
-  ; temporary
-  (number-markup (->* (number?) (#:exact-prefix (or/c 'always 'never 'when-necessary)
-                                 #:inexact-prefix (or/c 'always 'never 'when-necessary)
-                                 #:fraction-view (or/c #f 'mixed 'improper 'decimal))
-                      markup?))
   (empty-markup markup?)
   (empty-line markup?)
   (horizontal (markup? ... . -> . markup?))
@@ -36,9 +31,6 @@
                 #:exact-prefix [exact-prefix 'never] #:inexact-prefix [inexact-prefix 'never]
                 #:fraction-view [fraction-view #f])
   (make-number-markup number exact-prefix inexact-prefix fraction-view))
-
-; temporary
-(define number-markup number)
 
 ; flatten out nested markup elements, merge adjacent strings
 (define (normalize-horizontal markups)
