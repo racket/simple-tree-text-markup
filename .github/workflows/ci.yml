@@ -1,0 +1,35 @@
+on: [push, pull_request]
+name: CI
+jobs:
+  build:
+    name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        racket-version: ["current", "stable"]
+        racket-variant: ["CS"]
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: Bogdanp/setup-racket@v1.6
+        with:
+          architecture: x64
+          distribution: full
+          variant: ${{ matrix.racket-variant }}
+          version: ${{ matrix.racket-version }}
+          dest: '"${HOME}/racketdist-${{ matrix.racket-version }}-${{ matrix.racket-variant }}"'
+          local_catalogs: $GITHUB_WORKSPACE
+          sudo: never
+
+      - name: Check Racket version
+        run: racket -v
+      - name: Register local packages
+        run: |
+          raco pkg install -i --auto --no-setup --skip-installed simple-tree-text-markup-test simple-tree-text-markup-doc
+          raco pkg update --auto --no-setup simple-tree-text-markup-lib simple-tree-text-markup-doc simple-tree-text-markup simple-tree-text-markup-test
+      - name: Check package version
+        run: |
+          raco pkg show -al simple-tree-text-markup-lib simple-tree-text-markup-doc simple-tree-text-markup-test
+      - run: raco setup --check-pkg-deps --pkgs simple-tree-text-markup-lib simple-tree-text-markup-doc simple-tree-text-markup-test
+      - run: raco pkg show simple-tree-text-markup simple-tree-text-markup-lib simple-tree-text-markup-doc simple-tree-text-markup-test
+      - run: raco test -x -c simple-tree-text-markup
+      - run: raco test -c simple-tree-text-markup/tests
