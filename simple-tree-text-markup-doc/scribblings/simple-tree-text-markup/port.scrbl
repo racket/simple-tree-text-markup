@@ -25,3 +25,21 @@ markup by the @racket[special->markup] procedure.
 Thread-unsafe version of @racket[make-markup-output-port].
 }
 
+@definterface[srcloc-special<%> ()]{
+
+  This interface is for implementation by objects written via
+  @racket[write-special] to a port created by the procedures above: It marks
+  objects (typically snips) that represent a source location, for
+  which the markup output should render a link.
+
+  Note that, in order to make use of this, you will need to
+  call @racket[make-markup-output-port] with a @racket[special->markup] argument
+  that looks for specials implementing this interface and converts them to
+  markup appropriately.
+  
+  @defmethod*[(((get-srclocs) (or/c #f srcloc?)))]{
+    Returns the source location represented by the special object.
+  }
+}
+
+
