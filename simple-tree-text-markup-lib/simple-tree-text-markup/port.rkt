@@ -6,7 +6,7 @@
  (contract-out
   (make-markup-output-port/unsafe ((any/c . -> . markup?) . -> . (values output-port? (-> markup?))))
   (make-markup-output-port ((any/c . -> . markup?) . -> . (values output-port? (-> markup?))))
-  (srcloc-special<%> interface?)))
+  (srclocs-special<%> interface?)))
 
 (require simple-tree-text-markup/construct
          (only-in racket/list dropf)
@@ -91,6 +91,6 @@
      (lambda ()
        (call-with-semaphore lock get-markup)))))
 
-(define srcloc-special<%>
+(define srclocs-special<%>
   (interface ()
-    (get-srcloc (->m (or/c #f srcloc?)))))
+    (get-srclocs (->m (or/c #f (listof srcloc?))))))
