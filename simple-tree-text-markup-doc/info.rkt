@@ -12,6 +12,7 @@
                      "gui-doc"
                      "snip-lib"))
 (define deps '("base"))
+(define update-implies '("simple-tree-text-markup-lib"))
 
 (define pkg-desc "documentation part of \"simple-tree-text-markup\"")
 
