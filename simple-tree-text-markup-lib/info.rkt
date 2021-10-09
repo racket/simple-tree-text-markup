@@ -10,3 +10,6 @@
 (define pkg-authors '(sperber))
 
 (define version "1.1")
+
+(define license
+  '(Apache-2.0 OR MIT))

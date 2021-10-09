@@ -10,3 +10,6 @@
 (define pkg-desc "Combinator library for simple markup, mainly for displaying messages in a REPL")
 
 (define pkg-authors '(sperber))
+
+(define license
+  '(Apache-2.0 OR MIT))
