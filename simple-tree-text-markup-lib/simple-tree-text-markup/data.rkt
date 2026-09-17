@@ -3,7 +3,7 @@
 ; - horizontal and vertical composition
 ; - framed markup
 #lang racket/base
-(require racket/contract)
+(require racket/contract racket/serialize)
 (provide
  (contract-out (struct empty-markup ())
                (struct horizontal-markup
@@ -50,35 +50,35 @@
       (image-markup? x)
       (number-markup? x)))
 
-(struct empty-markup
+(serializable-struct empty-markup
   ()
   #:transparent)
 
-(struct horizontal-markup
+(serializable-struct horizontal-markup
   (markups)
   #:transparent)
 
-(struct vertical-markup
+(serializable-struct vertical-markup
   (markups)
   #:transparent)
 
-(struct srcloc-markup
+(serializable-struct srcloc-markup
   (srcloc markup)
   #:transparent)
 
-(struct framed-markup
+(serializable-struct framed-markup
   (markup)
   #:transparent)
 
-(struct image-markup
+(serializable-struct image-markup
   (data alt-markup)
   #:transparent)
 
-(struct record-dc-datum
+(serializable-struct record-dc-datum
   (datum width height)
   #:transparent)
 
-(struct number-markup (number exact-prefix inexact-prefix fraction-view)
+(serializable-struct number-markup (number exact-prefix inexact-prefix fraction-view)
   #:transparent)
 
 (define (markup-folder combine identity extractors)
