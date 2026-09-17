@@ -12,12 +12,12 @@
 
 While the struct definitions in
 @racketmodname[simple-tree-text-markup/data] can also be used for
-constructing markup, the procedures exported here are somewhat more
+constructing a @tech{markup object}, the procedures exported here are somewhat more
 convenient to use, and do a fair amount of normalization upon
 constructions.
 
 @defproc[(srcloc-markup [srcloc srcloc?] [markup markup?]) markup?]{
-This constructs a markup object that will represent a link to a source
+This constructs a @tech{markup object} that will represent a link to a source
 location, represented by @racket[srcloc], where the link visualization
 is represented by @racket[markup].
 }

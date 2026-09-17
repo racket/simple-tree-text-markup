@@ -14,7 +14,7 @@ definitions.  It should be required when inspecting markup, For
 constructing markup, see
 @racketmodname[simple-tree-text-markup/construct].
 
-A markup object can be one of the following:
+A @deftech{markup object} can be one of the following:
 
 @itemize[
 @item{a string}
@@ -26,42 +26,48 @@ A markup object can be one of the following:
 @item{an @racket[image-markup]}
 @item{a @racket[number-markup]}]
 
+All markup objects are serializable, with the possible
+exception of @racket[image-markup] objects (depending on the
+contents of the data field)
+        
+@history[#:changed "1.2" @list{Made @tech{markup objects} serializable}]
+
 @defproc[(markup? [object any/c]) boolean?]{
-Returns @racket[#t] if @racket[object] is a markup object, @racket[#f] otherwise.
+Returns @racket[#t] if @racket[object] is a @tech{markup object}, @racket[#f] otherwise.
 }
 
 @defstruct*[empty-markup ()]{
-This is an empty markup object, which consumes no space.}
+This is an empty @tech{markup object}, which consumes no space.}
 
 @defstruct*[horizontal-markup
 	    ((markups (listof markup?)))]{
-This markup object contains several sub-markups, which will be
+This @tech{markup object} contains several sub-markups, which will be
 arranged horizontally when rendered.
 }
 
 @defstruct*[vertical-markup
 	    ((markups (listof markup?)))]{
-This markup object contains several sub-markups, which will be
+This @tech{markup object} contains several sub-markups, which will be
 arranged vertically when rendered.
 }
 
 @defstruct*[srcloc-markup
 	    ((srcloc srcloc?)
              (markup markup?))]{
-This markup object represents a link to a source location, represented
+This @tech{markup object} represents a link to a source location, represented
 by @racket[srcloc], where the link visualization is represented by
 @racket[markup].
 }
 
 @defstruct*[framed-markup
 	    ((markup markup?))]{
-This markup object puts a frame around @racket[markup].
+This @tech{markup object} puts a frame around @racket[markup].
 }
 
 @defstruct*[image-markup
 	   ((data any/c)
 	    (alt-markup markup?))]{
-This markup object represents an image.  The @racket[data] contains the image data.
+This @tech{markup object} represents an image.  The @racket[data] contains the image data.
 The format is not exactly specified, but a graphical renderer should accept
 @racket[bitmap%], @racket[snip%], and @racket[record-dc-datum] objects.
 

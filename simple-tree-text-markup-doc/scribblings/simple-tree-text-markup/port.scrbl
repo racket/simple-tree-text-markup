@@ -10,7 +10,7 @@
 @defmodule[simple-tree-text-markup/port]
 
 This modules define procedures for creating output ports whose output
-is captured as a markup object.
+is captured as a @tech{markup object}.
 
 @defproc[(make-markup-output-port [special->markup (any/c . -> . markup?)]) (values output-port? (-> markup?))]{
 This procedure returns an output port and a thunk.
